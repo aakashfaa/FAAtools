@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Installed to: %ProgramData%\Autodesk\Revit\Addins\2027\FaaTools.addin
-  Payload at:   %ProgramData%\FaaTools\2027\net10.0-windows\FaaTools.RevitAddin.dll
+  Installed to: C:\ProgramData\Autodesk\Revit\Addins\2027\FaaTools.addin
+  Payload at:   C:\ProgramData\FaaTools\2027\net10.0-windows\FaaTools.RevitAddin.dll
   Revit 2027 hosts .NET 10 (confirmed via RevitAPI.runtimeconfig.json on this machine), matching
   the net10.0-windows build.
+  Literal path (not %ProgramData%) - see FaaTools.2025.addin for why.
 -->
 <RevitAddIns>
   <AddIn Type="Application">
     <Name>FAA Tools</Name>
-    <Assembly>%ProgramData%\FaaTools\2027\net10.0-windows\FaaTools.RevitAddin.dll</Assembly>
+    <Assembly>C:\ProgramData\FaaTools\2027\net10.0-windows\FaaTools.RevitAddin.dll</Assembly>
     <AddInId>4ca9c8c9-d095-4404-b593-c5b8bcb0ec20</AddInId>
     <FullClassName>FaaTools.RevitAddin.FaaToolsApplication</FullClassName>
     <VendorId>FAA</VendorId>

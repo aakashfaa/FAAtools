@@ -1,12 +1,25 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
-     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
   <Package Name="FAA Tools"
            Manufacturer="Finegold Alexander Architects"
            Version="$(var.FaaToolsVersion)"
            UpgradeCode="3abf59a0-5c37-44fb-bef7-626ab595b4af"
            Compressed="yes"
-           Scope="perMachine">
+           Scope="perMachine"
+           InstallerVersion="500">
+
+    <!--
+      This package must be built x64 (set via <Platform>x64</Platform> in
+      FaaTools.Installer.wixproj, not here) - it's required, not cosmetic: Revit's registry keys
+      (HKLM\SOFTWARE\Autodesk\Revit\<year>) live in the native 64-bit hive. A 32-bit MSI process
+      (WiX's default if Platform isn't set) gets silently redirected by Windows to
+      HKLM\SOFTWARE\WOW6432Node\Autodesk\Revit\<year>, which doesn't exist - every
+      RegistrySearch below would then "succeed" at finding nothing, and every component's
+      Condition would evaluate false, so the installer would register as installed but deploy
+      zero files. (This is exactly what happened in testing before this was fixed.)
+    -->
 
     <!--
       UpgradeCode above must NEVER change across releases - it's what lets a newer installer
@@ -39,16 +52,33 @@
     </Property>
 
     <!--
-      A single feature containing all three version-specific component groups; each individual
-      Component below carries its own <Condition> (WiX v4/v5 dropped Feature-level <Condition>
-      child elements, but Component still supports them) so only the components for installed
-      Revit versions actually get installed.
+      One Feature per Revit version, so the feature-selection screen below shows one checkbox
+      per version. All default to selected (Level="1"); if a checked feature's Revit version
+      isn't actually present, its components' own <Condition> (further below) silently skips
+      installing those files rather than erroring - so checking a box for a version that isn't
+      on this machine is a harmless no-op, not a failure.
     -->
-    <Feature Id="MainFeature" Title="FAA Tools" Level="1">
+    <Feature Id="Revit2025Feature" Title="Revit 2025" Level="1"
+             Description="Install FAA Tools for Autodesk Revit 2025.">
       <ComponentGroupRef Id="Revit2025Components" />
+    </Feature>
+    <Feature Id="Revit2026Feature" Title="Revit 2026" Level="1"
+             Description="Install FAA Tools for Autodesk Revit 2026.">
       <ComponentGroupRef Id="Revit2026Components" />
+    </Feature>
+    <Feature Id="Revit2027Feature" Title="Revit 2027" Level="1"
+             Description="Install FAA Tools for Autodesk Revit 2027.">
       <ComponentGroupRef Id="Revit2027Components" />
     </Feature>
+
+    <!--
+      Feature-selection wizard (Welcome -> License -> "which Revit versions?" checkbox tree ->
+      Install -> Finish). WixUI_FeatureTree is the stock WiX wizard that shows one checkbox per
+      Feature defined above - this is what gives users the "pick which versions to install"
+      screen, with a finish screen once installation completes.
+    -->
+    <ui:WixUI Id="WixUI_FeatureTree" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
 
     <StandardDirectory Id="CommonAppDataFolder">
       <Directory Name="FaaTools">

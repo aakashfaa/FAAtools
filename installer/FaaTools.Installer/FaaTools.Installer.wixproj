@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <OutputType>Package</OutputType>
+    <!--
+      Required: Revit's registry keys live in the native 64-bit hive, and a 32-bit MSI process
+      gets WOW64-redirected to WOW6432Node, where they don't exist. See Product.wxs comment.
+    -->
+    <Platform>x64</Platform>
     <DefineConstants>
       FaaToolsVersion=$(FaaToolsVersion);
       Net8OutDir=$(MSBuildThisFileDirectory)..\..\src\FaaTools.RevitAddin\bin\$(Configuration)\net8.0-windows\;
@@ -12,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="WixToolset.Util.wixext" Version="5.0.2" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
   </ItemGroup>
 
 </Project>

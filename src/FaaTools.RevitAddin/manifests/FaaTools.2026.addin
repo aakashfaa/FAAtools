@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Installed to: %ProgramData%\Autodesk\Revit\Addins\2026\FaaTools.addin
-  Payload at:   %ProgramData%\FaaTools\2026\net8.0-windows\FaaTools.RevitAddin.dll
+  Installed to: C:\ProgramData\Autodesk\Revit\Addins\2026\FaaTools.addin
+  Payload at:   C:\ProgramData\FaaTools\2026\net8.0-windows\FaaTools.RevitAddin.dll
   Revit 2026 also hosts .NET 8 (confirmed via RevitAPI.runtimeconfig.json), so it shares the
   same net8.0-windows build as 2025 - just a separate copy + manifest, since each Revit version
   reads its own Addins\<version> folder and each .addin needs its own Assembly path.
+  Literal path (not %ProgramData%) - see FaaTools.2025.addin for why.
 -->
 <RevitAddIns>
   <AddIn Type="Application">
     <Name>FAA Tools</Name>
-    <Assembly>%ProgramData%\FaaTools\2026\net8.0-windows\FaaTools.RevitAddin.dll</Assembly>
+    <Assembly>C:\ProgramData\FaaTools\2026\net8.0-windows\FaaTools.RevitAddin.dll</Assembly>
     <AddInId>4ca9c8c9-d095-4404-b593-c5b8bcb0ec20</AddInId>
     <FullClassName>FaaTools.RevitAddin.FaaToolsApplication</FullClassName>
     <VendorId>FAA</VendorId>
