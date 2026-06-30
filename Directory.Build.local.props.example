@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    Copy this file to Directory.Build.local.props (gitignored) and adjust the paths below
+    if Revit is installed somewhere other than the default Program Files location on this machine.
+  -->
+  <PropertyGroup>
+    <Revit2025Path>C:\Program Files\Autodesk\Revit 2025</Revit2025Path>
+    <Revit2026Path>C:\Program Files\Autodesk\Revit 2026</Revit2026Path>
+    <Revit2027Path>C:\Program Files\Autodesk\Revit 2027</Revit2027Path>
+  </PropertyGroup>
+</Project>

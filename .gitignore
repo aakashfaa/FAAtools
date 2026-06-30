@@ -1,0 +1,5 @@
+bin/
+obj/
+*.user
+Directory.Build.local.props
+.vs/

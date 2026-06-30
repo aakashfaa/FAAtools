@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/installer/">
+    <Project Path="installer/FaaTools.Installer/FaaTools.Installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/FaaTools.Core/FaaTools.Core.csproj" />
+    <Project Path="src/FaaTools.RevitAddin/FaaTools.RevitAddin.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FaaTools.Core.Tests/FaaTools.Core.Tests.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+</Solution>

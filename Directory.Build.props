@@ -1,0 +1,35 @@
+<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)version.props" />
+
+  <PropertyGroup>
+    <Version>$(FaaToolsVersion)</Version>
+    <AssemblyVersion>$(FaaToolsVersion).0</AssemblyVersion>
+    <FileVersion>$(FaaToolsVersion).0</FileVersion>
+    <Company>Finegold Alexander Architects</Company>
+    <Product>FAA Tools</Product>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <!--
+    Per-developer Revit install paths. Copy Directory.Build.local.props.example to
+    Directory.Build.local.props (gitignored) and adjust if Revit isn't in the default location.
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Build.local.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)Directory.Build.local.props')" />
+
+  <!-- Defaults matching a standard Autodesk install; overridable via Directory.Build.local.props above. -->
+  <PropertyGroup>
+    <Revit2025Path Condition="'$(Revit2025Path)' == ''">C:\Program Files\Autodesk\Revit 2025</Revit2025Path>
+    <Revit2026Path Condition="'$(Revit2026Path)' == ''">C:\Program Files\Autodesk\Revit 2026</Revit2026Path>
+    <Revit2027Path Condition="'$(Revit2027Path)' == ''">C:\Program Files\Autodesk\Revit 2027</Revit2027Path>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,17 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <DefineConstants>
+      FaaToolsVersion=$(FaaToolsVersion);
+      Net8OutDir=$(MSBuildThisFileDirectory)..\..\src\FaaTools.RevitAddin\bin\$(Configuration)\net8.0-windows\;
+      Net10OutDir=$(MSBuildThisFileDirectory)..\..\src\FaaTools.RevitAddin\bin\$(Configuration)\net10.0-windows\;
+      ManifestsDir=$(MSBuildThisFileDirectory)..\..\src\FaaTools.RevitAddin\manifests\;
+    </DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Util.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+</Project>

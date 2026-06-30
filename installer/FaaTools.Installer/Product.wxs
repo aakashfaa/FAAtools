@@ -1,0 +1,132 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+
+  <Package Name="FAA Tools"
+           Manufacturer="Finegold Alexander Architects"
+           Version="$(var.FaaToolsVersion)"
+           UpgradeCode="3abf59a0-5c37-44fb-bef7-626ab595b4af"
+           Compressed="yes"
+           Scope="perMachine">
+
+    <!--
+      UpgradeCode above must NEVER change across releases - it's what lets a newer installer
+      cleanly replace an older one (RemoveExistingProducts below) instead of installing
+      side-by-side. ProductVersion is taken from version.props via the FaaToolsVersion
+      MSBuild property (see Directory.Build.props) - bump that one value per release.
+      There is no auto-update: this MSI is just handed to users to double-click.
+    -->
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of FAA Tools is already installed."
+      Schedule="afterInstallInitialize" />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <!--
+      Detect which Revit versions are installed on this machine (real registry keys confirmed
+      on a dev machine with Revit 2025/2026/2027 installed: HKLM\SOFTWARE\Autodesk\Revit\<year>)
+      so only the relevant feature(s) install below. Each Property holds whatever the registry
+      key's default value is (or empty if the key doesn't exist) - presence/absence is all that
+      matters here, the actual value is unused.
+    -->
+    <Property Id="REVIT2025_INSTALLED">
+      <RegistrySearch Id="DetectRevit2025" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2025" Type="raw" />
+    </Property>
+    <Property Id="REVIT2026_INSTALLED">
+      <RegistrySearch Id="DetectRevit2026" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2026" Type="raw" />
+    </Property>
+    <Property Id="REVIT2027_INSTALLED">
+      <RegistrySearch Id="DetectRevit2027" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2027" Type="raw" />
+    </Property>
+
+    <!--
+      A single feature containing all three version-specific component groups; each individual
+      Component below carries its own <Condition> (WiX v4/v5 dropped Feature-level <Condition>
+      child elements, but Component still supports them) so only the components for installed
+      Revit versions actually get installed.
+    -->
+    <Feature Id="MainFeature" Title="FAA Tools" Level="1">
+      <ComponentGroupRef Id="Revit2025Components" />
+      <ComponentGroupRef Id="Revit2026Components" />
+      <ComponentGroupRef Id="Revit2027Components" />
+    </Feature>
+
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Name="FaaTools">
+        <Directory Id="PAYLOAD_2025" Name="2025">
+          <Directory Id="PAYLOAD_2025_NET8" Name="net8.0-windows" />
+        </Directory>
+        <Directory Id="PAYLOAD_2026" Name="2026">
+          <Directory Id="PAYLOAD_2026_NET8" Name="net8.0-windows" />
+        </Directory>
+        <Directory Id="PAYLOAD_2027" Name="2027">
+          <Directory Id="PAYLOAD_2027_NET10" Name="net10.0-windows" />
+        </Directory>
+      </Directory>
+      <Directory Name="Autodesk">
+        <Directory Name="Revit">
+          <Directory Name="Addins">
+            <Directory Id="ADDIN_2025" Name="2025" />
+            <Directory Id="ADDIN_2026" Name="2026" />
+            <Directory Id="ADDIN_2027" Name="2027" />
+          </Directory>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <!--
+      Each Component below carries a <Condition> child (the standard WiX way to make a
+      component's install conditional) so it only installs when the matching Revit version's
+      registry key was found above - this is what makes "only some Revit versions installed"
+      work correctly.
+    -->
+
+    <!-- Revit 2025: net8.0-windows payload + .addin manifest, only installed if 2025 is present. -->
+    <ComponentGroup Id="Revit2025Components">
+      <Component Id="Payload2025_Core" Directory="PAYLOAD_2025_NET8" Guid="9e3f6f6a-9a2a-4a64-9b9f-2a1b6c9d0e21" Condition="REVIT2025_INSTALLED">
+        <File Id="Payload2025_CoreDll" Source="$(var.Net8OutDir)FaaTools.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="Payload2025_Addin" Directory="PAYLOAD_2025_NET8" Guid="6a2c0f7a-2a48-4f9a-8a9b-1f3a5d7c9e22" Condition="REVIT2025_INSTALLED">
+        <File Id="Payload2025_AddinDll" Source="$(var.Net8OutDir)FaaTools.RevitAddin.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="Payload2025_Deps" Directory="PAYLOAD_2025_NET8" Guid="1b5e9d3c-7f4a-4b2e-9c1d-3e5f7a9b0c23" Condition="REVIT2025_INSTALLED">
+        <File Id="Payload2025_DepsJson" Source="$(var.Net8OutDir)FaaTools.RevitAddin.deps.json" KeyPath="yes" />
+      </Component>
+      <Component Id="Manifest2025" Directory="ADDIN_2025" Guid="4c8a1e6b-3d5f-4a7c-9e1b-2d4f6a8c0e24" Condition="REVIT2025_INSTALLED">
+        <File Id="Manifest2025File" Name="FaaTools.addin" Source="$(var.ManifestsDir)FaaTools.2025.addin" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Revit 2026: same net8.0-windows build as 2025 (both host .NET 8), separate copy + manifest. -->
+    <ComponentGroup Id="Revit2026Components">
+      <Component Id="Payload2026_Core" Directory="PAYLOAD_2026_NET8" Guid="7d2f4a6c-8e1b-4c3d-9f5a-6b8d0e2f4a25" Condition="REVIT2026_INSTALLED">
+        <File Id="Payload2026_CoreDll" Source="$(var.Net8OutDir)FaaTools.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="Payload2026_Addin" Directory="PAYLOAD_2026_NET8" Guid="2e6a8c0e-4f2d-4b6a-8c0e-2f4a6b8d0e26" Condition="REVIT2026_INSTALLED">
+        <File Id="Payload2026_AddinDll" Source="$(var.Net8OutDir)FaaTools.RevitAddin.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="Payload2026_Deps" Directory="PAYLOAD_2026_NET8" Guid="8f0c2e4a-6b8d-4e0f-8a2c-4e6b8d0f2a27" Condition="REVIT2026_INSTALLED">
+        <File Id="Payload2026_DepsJson" Source="$(var.Net8OutDir)FaaTools.RevitAddin.deps.json" KeyPath="yes" />
+      </Component>
+      <Component Id="Manifest2026" Directory="ADDIN_2026" Guid="0a2c4e6b-8d0f-4a2c-9e4b-6d8f0a2c4e28" Condition="REVIT2026_INSTALLED">
+        <File Id="Manifest2026File" Name="FaaTools.addin" Source="$(var.ManifestsDir)FaaTools.2026.addin" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Revit 2027: net10.0-windows build (Revit 2027 hosts .NET 10). -->
+    <ComponentGroup Id="Revit2027Components">
+      <Component Id="Payload2027_Core" Directory="PAYLOAD_2027_NET10" Guid="3c5e7a9b-1d3f-4e5a-8c0e-2f4a6c8e0a29" Condition="REVIT2027_INSTALLED">
+        <File Id="Payload2027_CoreDll" Source="$(var.Net10OutDir)FaaTools.Core.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="Payload2027_Addin" Directory="PAYLOAD_2027_NET10" Guid="5e7a9c1e-3f5a-4c6e-9d1f-3a5c7e9b1d30" Condition="REVIT2027_INSTALLED">
+        <File Id="Payload2027_AddinDll" Source="$(var.Net10OutDir)FaaTools.RevitAddin.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="Payload2027_Deps" Directory="PAYLOAD_2027_NET10" Guid="9c1e3a5c-7e9b-4d1f-8a3c-5e7a9c1e3d31" Condition="REVIT2027_INSTALLED">
+        <File Id="Payload2027_DepsJson" Source="$(var.Net10OutDir)FaaTools.RevitAddin.deps.json" KeyPath="yes" />
+      </Component>
+      <Component Id="Manifest2027" Directory="ADDIN_2027" Guid="1e3a5c7e-9b1d-4f3a-9c5e-7a9c1e3a5d32" Condition="REVIT2027_INSTALLED">
+        <File Id="Manifest2027File" Name="FaaTools.addin" Source="$(var.ManifestsDir)FaaTools.2027.addin" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+  </Package>
+</Wix>

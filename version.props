@@ -1,0 +1,10 @@
+<Project>
+  <!--
+    Single source of truth for the product version.
+    Bump this one value per release, rebuild, rebuild the installer, hand out the new .msi.
+    See docs/RELEASING.md.
+  -->
+  <PropertyGroup>
+    <FaaToolsVersion>0.1.0</FaaToolsVersion>
+  </PropertyGroup>
+</Project>

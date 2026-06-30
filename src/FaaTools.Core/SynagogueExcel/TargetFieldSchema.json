@@ -1,0 +1,31 @@
+{
+  "sheetName": "Area Tabulation",
+  "fields": [
+    {
+      "key": "ProjectName",
+      "label": "Project Name",
+      "kind": "Text",
+      "row": 1,
+      "col": 1,
+      "required": true
+    },
+    {
+      "key": "ExportedOn",
+      "label": "Date",
+      "kind": "DateCombinedText",
+      "row": 4,
+      "col": 1,
+      "required": true,
+      "textFormat": "Date: {0}"
+    },
+    {
+      "key": "JobNumber",
+      "label": "Job #",
+      "kind": "Text",
+      "row": 4,
+      "col": 6,
+      "required": false,
+      "notes": "Inferred placement (immediately right of the 'Job # ' label at E4) - confirm against a real filled-in example before relying on it."
+    }
+  ]
+}

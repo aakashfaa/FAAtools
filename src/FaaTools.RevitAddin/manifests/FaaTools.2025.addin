@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Installed to: %ProgramData%\Autodesk\Revit\Addins\2025\FaaTools.addin
+  Payload at:   %ProgramData%\FaaTools\2025\net8.0-windows\FaaTools.RevitAddin.dll
+  Revit 2025 hosts .NET 8 (confirmed via RevitAPI.runtimeconfig.json), matching the
+  net8.0-windows build.
+-->
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>FAA Tools</Name>
+    <Assembly>%ProgramData%\FaaTools\2025\net8.0-windows\FaaTools.RevitAddin.dll</Assembly>
+    <AddInId>4ca9c8c9-d095-4404-b593-c5b8bcb0ec20</AddInId>
+    <FullClassName>FaaTools.RevitAddin.FaaToolsApplication</FullClassName>
+    <VendorId>FAA</VendorId>
+    <VendorDescription>Finegold Alexander Architects</VendorDescription>
+  </AddIn>
+</RevitAddIns>
