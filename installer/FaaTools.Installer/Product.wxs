@@ -35,20 +35,22 @@
     <MediaTemplate EmbedCab="yes" />
 
     <!--
-      Detect which Revit versions are installed on this machine (real registry keys confirmed
-      on a dev machine with Revit 2025/2026/2027 installed: HKLM\SOFTWARE\Autodesk\Revit\<year>)
-      so only the relevant feature(s) install below. Each Property holds whatever the registry
-      key's default value is (or empty if the key doesn't exist) - presence/absence is all that
-      matters here, the actual value is unused.
+      Detect which Revit versions are installed on this machine. HKLM\SOFTWARE\Autodesk\Revit\<year>
+      exists for an installed Revit, but the key itself has no default (unnamed) value - a
+      RegistrySearch with no Name attribute only reads the default value, so it silently found
+      nothing even though the key was present (confirmed via a logged real install: AppSearch
+      never set these properties at all). \<year>\RCL\Installed is an actual named DWORD value
+      (=1) that's reliably present for every Revit version on a real dev machine with
+      2025/2026/2027 installed - checking that instead.
     -->
     <Property Id="REVIT2025_INSTALLED">
-      <RegistrySearch Id="DetectRevit2025" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2025" Type="raw" />
+      <RegistrySearch Id="DetectRevit2025" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2025\RCL" Name="Installed" Type="raw" />
     </Property>
     <Property Id="REVIT2026_INSTALLED">
-      <RegistrySearch Id="DetectRevit2026" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2026" Type="raw" />
+      <RegistrySearch Id="DetectRevit2026" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2026\RCL" Name="Installed" Type="raw" />
     </Property>
     <Property Id="REVIT2027_INSTALLED">
-      <RegistrySearch Id="DetectRevit2027" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2027" Type="raw" />
+      <RegistrySearch Id="DetectRevit2027" Root="HKLM" Key="SOFTWARE\Autodesk\Revit\2027\RCL" Name="Installed" Type="raw" />
     </Property>
 
     <!--
